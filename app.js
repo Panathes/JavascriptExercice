@@ -11,23 +11,18 @@ button.addEventListener('click', function() {
   time.textContent = 20;
   start.classList.remove('is-open');
   game.classList.add('is-open');
-
-});
 timer();
+});
+
 // Countdown
 
 function timer() {
   if (time.textContent > 0) {
     time.textContent --
+  }
+  if (time.textContent === '0') {
+    gameover.classList.remove('is-open');
+    gameover.classList.add('is-open');
   };
   setTimeout(timer, 1000);
 };
-
-function itsOver() {
- if (time.textContent === 0) {
-   game.classList.remove('is-open');
-   gameover.classList.add('is-open');
- };
-};
-
-itsOver();
