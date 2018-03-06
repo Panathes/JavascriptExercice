@@ -5,6 +5,8 @@ var button = document.querySelector('button');
 var startButton = document.querySelector('#game-start > button');
 var restartButton = document.querySelector('#game-over > button');
 var originalFlag = document.querySelector('.flag');
+var svgFlag = 'flags/fr.svg'
+
 
 var title = document.querySelector('h2');
 
@@ -13,10 +15,18 @@ var time = document.querySelector('span');
 // random name
 var randomTitle = flags[Math.floor(Math.random() * flags.length)].name;
 
-//randomCards
+// randomflags
+var randomflags = flags[Math.floor(Math.random() * flags.length)].code;
+
+//urlflagchange
+function changeUrl () {
+  var svgFlagChange = svgFlag.replace('fr', 'randomflags');
+}
+
+//randomCards and
 function randomCards() {
 for (var i = 0; i < array.length; i++) {
-  
+
 }
 }
 
