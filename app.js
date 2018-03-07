@@ -4,8 +4,6 @@ var game = document.getElementById('game');
 var button = document.querySelector('button');
 var startButton = document.querySelector('#game-start > button');
 var restartButton = document.querySelector('#game-over > button');
-var originalFlag = document.querySelector('.flag');
-var svgFlag = 'flags/fr.svg'
 
 
 var title = document.querySelector('h2');
@@ -19,15 +17,17 @@ var randomTitle = flags[Math.floor(Math.random() * flags.length)].name;
 var randomflags = flags[Math.floor(Math.random() * flags.length)].code;
 
 //urlflagchange
-function changeUrl () {
-  var svgFlagChange = svgFlag.replace('fr', 'randomflags');
-}
+var originalFlag = 'flags/' + flags[Math.floor(Math.random() * flags.length)].code.toLowerCase() + '.svg'
+var svgFlag = document.querySelectorAll('.flag img src');
+
+
+
+//test
+
 
 //randomCards and
 function randomCards() {
-for (var i = 0; i < array.length; i++) {
 
-}
 }
 
 // Start game
@@ -37,6 +37,7 @@ startButton.addEventListener('click', function() {
   start.classList.remove('is-open');
   game.classList.add('is-open');
   title.textContent = randomTitle;
+
 });
 
 //Restart game
