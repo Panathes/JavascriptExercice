@@ -13,29 +13,37 @@ var title = document.querySelector('h2');
 
 var time = document.querySelector('span');
 
+// random ID - random Id name - random Id flags
+var randomGoodId = flags[Math.floor(Math.random() * flags.length)];
+var randomGoodIdname = randomGoodId.name;
+var randonGoodIdCode = randomGoodId.code.toLowerCase()
+var randomGoodIdflags = 'flags/' + randomGoodId.code.toLowerCase() + '.svg';
+
 // random name
  var  randomTitle = flags[Math.floor(Math.random() * flags.length)].name;
 //var goodIndex = flags[rand(flag.length)];
 
 //var randomTitle = flags[rand(flag.length)].name;
 
-
-var random = rand();
 // randomflags
 var randomflags = flags[Math.floor(Math.random() * flags.length)].code;
 
 //urlflagchange
 var originalFlag = 'flags/' + flags[Math.floor(Math.random() * flags.length)].code.toLowerCase() + '.svg';
-//var svgFlag =
-var flag = document.querySelectorAll('.flag  img');
+// Selection du flag clickable - des flags - du flag elu
+var oneFlag = document.querySelector('.flag img')
+var flag = document.querySelectorAll('.flag img');
+var flagId = flag[Math.floor(Math.random() * flag.length)]
 
-
-//test
 
 // random colors
 // liste conditions pour couleurs/puis titre = 1 drapeau/puis perte de vie + augmentation temps
 
-//function good flag() {}
+//Definir un drapeau et son nom a placer
+/*function positionGoodFlag () {
+  title.textContent = randomGoodId
+
+}*/
 
 //randomCards
 function randomCards() {
@@ -44,14 +52,20 @@ function randomCards() {
   }
 }
 
+//Random good card : placer le flag de manière aléatoire
+function randomGoodIdPlace() {
+  title.textContent = randomGoodIdname;
+  flagId.src = randomGoodIdflags;
+}
+
 // Start game
 
 startButton.addEventListener('click', function() {
   time.textContent = 20;
   start.classList.remove('is-open');
   game.classList.add('is-open');
-  title.textContent = randomTitle;
   randomCards();
+  randomGoodIdPlace();
 });
 
 //Restart game
@@ -59,6 +73,8 @@ restartButton.addEventListener('click', function(){
   time.textContent = 20;
   gameover.classList.remove('is-open');
   game.classList.add('is-open');
+  randomCards();
+  randomGoodIdPlace();
 });
 
 timer();
@@ -72,4 +88,26 @@ function timer() {
   gameover.classList.add('is-open');
   };
   setTimeout(timer, 1000);
+};
+
+/* fonction verifiant au click si le nom et le drapeau correspond :
+  Si c'est bon on ajoute 3 secondes au temps total
+  Si ce n'est pas bon on retire une vie*/
+for (let i = 0; i < flag.length; i++) {
+  var checkFlag = true;
+    flag[i].addEventListener('click', function(){
+      if (flag[i].src.match(randomGoodId.code.toLowerCase() + '.svg')) {
+        var checkFlag = true;
+        console.log(checkFlag);
+      } else {
+        var checkFlag = false;
+        console.log(checkFlag)
+      }
+
+      if (checkFlag = true) {
+        time = time + 3
+      } else {
+        // Définir variable - puis condition pour la perte de vie. Enfin si 3 vie perdu = gameover
+      }
+  });
 };
