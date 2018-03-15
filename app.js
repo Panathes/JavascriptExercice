@@ -4,6 +4,7 @@ var game = document.getElementById('game');
 var button = document.querySelector('button');
 var startButton = document.querySelector('#game-start > button');
 var restartButton = document.querySelector('#game-over > button');
+var life = 3;
 
 var rand = function(max) {
   return Math.floor(Math.random() * max);
@@ -12,6 +13,7 @@ var rand = function(max) {
 var title = document.querySelector('h2');
 
 var time = document.querySelector('span');
+var score = document.querySelector('strong');
 
 // random ID - random Id name - random Id flags
 var randomGoodId = flags[Math.floor(Math.random() * flags.length)];
@@ -81,12 +83,15 @@ timer();
 // Countdown
 
 function timer() {
-  if (time.textContent > 0) {
+  if (time.textContent > '0') {
     time.textContent --
   }
   if (time.textContent === '0') {
   gameover.classList.add('is-open');
   };
+  if (time.textContent === '20') {
+    time.textContent === '20';
+  }
   setTimeout(timer, 1000);
 };
 
@@ -94,20 +99,12 @@ function timer() {
   Si c'est bon on ajoute 3 secondes au temps total
   Si ce n'est pas bon on retire une vie*/
 for (let i = 0; i < flag.length; i++) {
-  var checkFlag = true;
     flag[i].addEventListener('click', function(){
       if (flag[i].src.match(randomGoodId.code.toLowerCase() + '.svg')) {
-        var checkFlag = true;
-        console.log(checkFlag);
+        time.textContent = parseInt(time.textContent) + 3
       } else {
-        var checkFlag = false;
-        console.log(checkFlag)
-      }
-
-      if (checkFlag = true) {
-        time = time + 3
-      } else {
-        // Définir variable - puis condition pour la perte de vie. Enfin si 3 vie perdu = gameover
+        life = life - 1
+        score.textContent = parseInt(score.textContent) + 1
       }
   });
 };
