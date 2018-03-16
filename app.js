@@ -33,10 +33,10 @@ var randomflags = flags[Math.floor(Math.random() * flags.length)].code;
 //urlflagchange
 var originalFlag = 'flags/' + flags[Math.floor(Math.random() * flags.length)].code.toLowerCase() + '.svg';
 // Selection du flag clickable - des flags - du flag elu
-var oneFlag = document.querySelector('.flag img')
+var oneFlag = document.querySelector('.flag img');
 var flag = document.querySelectorAll('.flag img');
+var lives = document.querySelectorAll('.lives img');
 var flagId = flag[Math.floor(Math.random() * flag.length)]
-
 
 // random colors
 // liste conditions pour couleurs/puis titre = 1 drapeau/puis perte de vie + augmentation temps
@@ -102,9 +102,11 @@ for (let i = 0; i < flag.length; i++) {
     flag[i].addEventListener('click', function(){
       if (flag[i].src.match(randomGoodId.code.toLowerCase() + '.svg')) {
         time.textContent = parseInt(time.textContent) + 3
-      } else {
-        life = life - 1
         score.textContent = parseInt(score.textContent) + 1
+        console.log('hj');
+      } else {
+          lives.textContent.style.opacity = "0.2";
+          life = life - 1
       }
   });
 };
