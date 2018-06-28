@@ -1,112 +1,208 @@
-var start = document.getElementById('game-start');
-var gameover = document.getElementById('game-over');
-var game = document.getElementById('game');
-var button = document.querySelector('button');
-var startButton = document.querySelector('#game-start > button');
-var restartButton = document.querySelector('#game-over > button');
-var life = 3;
-
-var rand = function(max) {
-  return Math.floor(Math.random() * max);
-}
-
-var title = document.querySelector('h2');
-
-var time = document.querySelector('span');
-var score = document.querySelector('strong');
-
-// random ID - random Id name - random Id flags
-var randomGoodId = flags[Math.floor(Math.random() * flags.length)];
-var randomGoodIdname = randomGoodId.name;
-var randonGoodIdCode = randomGoodId.code.toLowerCase()
-var randomGoodIdflags = 'flags/' + randomGoodId.code.toLowerCase() + '.svg';
-
-// random name
- var  randomTitle = flags[Math.floor(Math.random() * flags.length)].name;
-//var goodIndex = flags[rand(flag.length)];
-
-//var randomTitle = flags[rand(flag.length)].name;
-
-// randomflags
-var randomflags = flags[Math.floor(Math.random() * flags.length)].code;
-
-//urlflagchange
-var originalFlag = 'flags/' + flags[Math.floor(Math.random() * flags.length)].code.toLowerCase() + '.svg';
-// Selection du flag clickable - des flags - du flag elu
-var oneFlag = document.querySelector('.flag img');
-var flag = document.querySelectorAll('.flag img');
-var lives = document.querySelectorAll('.lives img');
-var flagId = flag[Math.floor(Math.random() * flag.length)]
-
-// random colors
-// liste conditions pour couleurs/puis titre = 1 drapeau/puis perte de vie + augmentation temps
-
-//Definir un drapeau et son nom a placer
-/*function positionGoodFlag () {
-  title.textContent = randomGoodId
-
-}*/
-
-//randomCards
-function randomCards() {
-  for (var i = 0; i < flag.length; i++) {
-    flag[i].src = 'flags/' + flags[Math.floor(Math.random() * flags.length)].code.toLowerCase() + '.svg';
-  }
-}
-
-//Random good card : placer le flag de manière aléatoire
-function randomGoodIdPlace() {
-  title.textContent = randomGoodIdname;
-  flagId.src = randomGoodIdflags;
-}
-
-// Start game
-
-startButton.addEventListener('click', function() {
-  time.textContent = 20;
-  start.classList.remove('is-open');
-  game.classList.add('is-open');
-  randomCards();
-  randomGoodIdPlace();
-});
-
-//Restart game
-restartButton.addEventListener('click', function(){
-  time.textContent = 20;
-  gameover.classList.remove('is-open');
-  game.classList.add('is-open');
-  randomCards();
-  randomGoodIdPlace();
-});
-
-timer();
-// Countdown
-
-function timer() {
-  if (time.textContent > '0') {
-    time.textContent --
-  }
-  if (time.textContent === '0') {
-  gameover.classList.add('is-open');
-  };
-  if (time.textContent === '20') {
-    time.textContent === '20';
-  }
-  setTimeout(timer, 1000);
+var ui = {
+    restart_screen: document.querySelector('#game-over'),
+    restart_btn: document.querySelector('#game-over button'),
+    start_screen: document.querySelector('#game-start'),
+    start_btn: document.querySelector('#game-start button'),
+    time_left: document.querySelector('.time span'),
+    flags: document.querySelectorAll('.flag'),
+    flags_img: document.querySelectorAll('.flag img'),
+    title: document.querySelector('h2'),
+    lives: document.querySelectorAll('.lives img'),
+    score: document.querySelector('.score strong')
 };
 
-/* fonction verifiant au click si le nom et le drapeau correspond :
-  Si c'est bon on ajoute 3 secondes au temps total
-  Si ce n'est pas bon on retire une vie*/
-for (let i = 0; i < flag.length; i++) {
-    flag[i].addEventListener('click', function(){
-      if (flag[i].src.match(randomGoodId.code.toLowerCase() + '.svg')) {
-        time.textContent = parseInt(time.textContent) + 3
-        score.textContent = parseInt(score.textContent) + 1
-        console.log('hj');
-      } else {
-          lives.textContent.style.opacity = "0.2";
-          life = life - 1
-      }
-  });
-};
+
+var flags_copy = flags.slice();
+var time_left = 20;
+var time_id;
+var life_left = 3;
+var score = 0;
+var game_is_over = false;
+var flag_to_find;
+var flags_to_show;
+
+
+ui.start_btn.addEventListener('click', function() {
+    setEvents();
+    startGame();
+
+    ui.start_screen.classList.remove('is-open');
+});
+
+
+ui.restart_btn.addEventListener('click', function() {
+    time_left = 20;
+    life_left = 3;
+    score = 0;
+    game_is_over = false;
+    flags = flags_copy.slice();
+
+
+    for (var i = 0; i < ui.lives.length; i++) {
+        ui.lives[i].classList.remove('is-active');
+    }
+
+
+    ui.time_left.textContent = time_left;
+    ui.score.textContent = score;
+
+    startGame();
+
+    ui.restart_screen.classList.remove('is-open');
+});
+
+
+function setEvents() {
+    for (var i = 0; i < ui.flags.length; i++) {
+        addClickEventOnFlag(i);
+    }
+}
+
+function addClickEventOnFlag(index) {
+    ui.flags[index].addEventListener('click', function() {
+
+        if (game_is_over || ui.flags[index].classList.contains('is-active')) {
+            return;
+        }
+
+
+        if (flags_to_show[index].name === flag_to_find.name) {
+            addScore();
+            renderFlags();
+        } else {
+            removeLife();
+            ui.flags[index].classList.add('is-active');
+        }
+    });
+}
+
+function renderFlags() {
+
+    var random = Math.floor( Math.random() * flags.length );
+
+    flag_to_find = flags[random];
+
+
+    flags = flags.filter(function(flag) {
+        return flag.name !== flag_to_find.name;
+    });
+
+
+    flags_to_show = [];
+
+
+    var best_match = flags.filter(function (flag) {
+        var count = 0;
+        var colors = flag_to_find.colors;
+
+        for (var i = 0; i < colors.length; i++) {
+            if (flag.colors.indexOf(colors[i]) > -1) {
+                count++;
+            }
+        }
+
+
+        return count === colors.length;
+    });
+
+
+    if (best_match.length < 3) {
+
+        var remaining = flags.filter(function(flag) {
+            return best_match.indexOf(flag) === -1;
+        });
+
+        var new_best_match = remaining.filter(function (flag) {
+            var count = 0;
+            var colors = flag_to_find.colors;
+
+            for (var i = 0; i < colors.length; i++) {
+                if (flag.colors.indexOf(colors[i]) > -1) {
+                    count++;
+                }
+            }
+
+            return count >= 1;
+        });
+
+
+        best_match = best_match.concat(new_best_match);
+    }
+
+
+    flags_to_show = best_match.slice(0, 3);
+
+    flags_to_show.push(flag_to_find);
+
+    flags_to_show = shuffling(flags_to_show);
+
+
+    for (var i = 0; i < flags_to_show.length; i++) {
+        var code = flags_to_show[i].code.toLowerCase();
+        ui.flags_img[i].src = 'flags/' + code + '.svg';
+
+        ui.flags[i].classList.remove('is-active');
+    }
+
+
+    ui.title.textContent = flag_to_find.name;
+}
+
+function startGame() {
+    startTimer();
+    renderFlags();
+}
+
+function startTimer() {
+    time_id = setInterval(function() {
+        time_left--;
+
+        if (time_left <= 0) {
+            gameOver();
+        }
+
+        ui.time_left.textContent = time_left;
+    }, 1000);
+}
+
+function removeLife() {
+    life_left--;
+
+    if (life_left <= 0) {
+        gameOver();
+        return;
+    }
+
+    ui.lives[life_left].classList.add('is-active');
+}
+
+function gameOver() {
+    game_is_over = true;
+    clearInterval(time_id);
+    ui.restart_screen.classList.add('is-open');
+}
+
+function shuffling(tab_to_shuffle) {
+
+    var temp, random;
+
+    for (var i = 0; i < tab_to_shuffle.length; i++) {
+        random = Math.floor( Math.random() * tab_to_shuffle.length );
+        temp = tab_to_shuffle[i];
+        tab_to_shuffle[i] = tab_to_shuffle[random];
+        tab_to_shuffle[random] = temp;
+    }
+
+    return tab_to_shuffle;
+}
+
+function addScore() {
+    time_left += 5;
+    score++;
+
+    if (time_left > 30) {
+        time_left = 30;
+    }
+
+    ui.score.textContent = score;
+}
